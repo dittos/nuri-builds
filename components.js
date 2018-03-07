@@ -28,6 +28,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
+var PropTypes = require("prop-types");
 var util_1 = require("./util");
 var ControllerProvider = /** @class */ (function (_super) {
     __extends(ControllerProvider, _super);
@@ -41,7 +42,7 @@ var ControllerProvider = /** @class */ (function (_super) {
         return { controller: this.props.controller };
     };
     ControllerProvider.childContextTypes = {
-        controller: React.PropTypes.object
+        controller: PropTypes.object
     };
     return ControllerProvider;
 }(React.Component));
@@ -82,7 +83,7 @@ function Link(props, context) {
 }
 exports.Link = Link;
 Link.contextTypes = {
-    controller: React.PropTypes.object
+    controller: PropTypes.object
 };
 function Null() {
     return null;

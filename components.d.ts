@@ -4,7 +4,7 @@ import { DataUpdater, WireObject, RouteComponent, Loader } from './app';
 import { AppController } from './client/controller';
 export declare class ControllerProvider extends React.Component<any> {
     static childContextTypes: {
-        controller: React.Requireable<any>;
+        controller: any;
     };
     render(): React.ReactElement<any>;
     getChildContext(): {
