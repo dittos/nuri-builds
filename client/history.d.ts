@@ -16,6 +16,7 @@ export interface History {
     locationChanges(): Observable<Location>;
     pushLocation(location: Location): void;
     doesPushLocationRefreshPage(): boolean;
+    back(): void;
 }
 export declare function createHistory(): History;
 export declare class BrowserHistory implements History {
@@ -36,6 +37,7 @@ export declare class BrowserHistory implements History {
     setHistoryToken(token: string): void;
     pushLocation({token, uri}: Location): void;
     doesPushLocationRefreshPage(): boolean;
+    back(): void;
 }
 export declare class FallbackHistory implements History {
     getLocation(): {
@@ -49,4 +51,5 @@ export declare class FallbackHistory implements History {
     locationChanges(): Observable<Location>;
     pushLocation({uri}: Location): void;
     doesPushLocationRefreshPage(): boolean;
+    back(): void;
 }

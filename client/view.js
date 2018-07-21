@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
 var ReactDOM = require("react-dom");
 var app_1 = require("../app");
 var components_1 = require("../components");
@@ -16,16 +17,19 @@ var AppView = /** @class */ (function () {
             }
         }, false);
     }
-    AppView.prototype.setState = function (state) {
+    AppView.prototype.setState = function (state, ancestorStates) {
         this.state = state;
+        this.ancestorStates = ancestorStates;
         this._render();
     };
     AppView.prototype._render = function () {
+        var _this = this;
         var state = this.state;
         if (!state) {
             return;
         }
-        var handler = state.handler, data = state.data, _a = state.scrollX, scrollX = _a === void 0 ? 0 : _a, _b = state.scrollY, scrollY = _b === void 0 ? 0 : _b;
+        var parent = this.ancestorStates.length > 0 ? this.ancestorStates[0] : null;
+        var handler = state.handler, data = state.data, _a = state.scrollX, scrollX = _a === void 0 ? (parent && parent.scrollX) || 0 : _a, _b = state.scrollY, scrollY = _b === void 0 ? (parent && parent.scrollY) || 0 : _b;
         document.title = app_1.renderTitle(this.controller.app, handler, data);
         var element = components_1.createRouteElement(handler.component, {
             controller: this.controller,
@@ -33,14 +37,20 @@ var AppView = /** @class */ (function () {
             writeData: this.writeData.bind(this, state),
             loader: this.controller.getLoader(),
         });
-        ReactDOM.render(element, this.container);
+        var ancestors = this.ancestorStates.map(function (it) { return components_1.createRouteElement(it.handler.component, {
+            controller: _this.controller,
+            data: it.data,
+            writeData: _this.writeData.bind(_this, it),
+            loader: _this.controller.getLoader(),
+        }); });
+        ReactDOM.render(React.createElement(React.Fragment, null,
+            ancestors,
+            element), this.container);
         window.scrollTo(scrollX, scrollY);
     };
     AppView.prototype.writeData = function (state, updater) {
-        if (!this.state || this.state !== state)
-            return;
         // TODO: batch updates
-        updater(this.state.data);
+        updater(state.data);
         this._render();
     };
     AppView.prototype._onScrollChange = function (x, y) {

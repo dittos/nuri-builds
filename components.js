@@ -54,7 +54,7 @@ function isModifiedEvent(event) {
     return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }
 function Link(props, context) {
-    var to = props.to, _a = props.queryParams, queryParams = _a === void 0 ? {} : _a, onClick = props.onClick, restProps = __rest(props, ["to", "queryParams", "onClick"]);
+    var to = props.to, _a = props.queryParams, queryParams = _a === void 0 ? {} : _a, onClick = props.onClick, _b = props.stacked, stacked = _b === void 0 ? false : _b, _c = props.returnToParent, returnToParent = _c === void 0 ? false : _c, restProps = __rest(props, ["to", "queryParams", "onClick", "stacked", "returnToParent"]);
     var uri = {
         path: to,
         query: queryParams,
@@ -75,7 +75,7 @@ function Link(props, context) {
         }
         event.preventDefault();
         if (allowTransition && context && context.controller) {
-            context.controller.load(uri);
+            context.controller.load(uri, { stacked: stacked, returnToParent: returnToParent });
         }
     }
     var href = util_1.uriToString(uri);

@@ -43,6 +43,7 @@ export declare type BaseRequest = {
     params: {
         [key: string]: any;
     };
+    stacked?: boolean;
 };
 export declare type Request = BaseRequest & {
     redirect: (uri: string) => Promise<Redirect>;

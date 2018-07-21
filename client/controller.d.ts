@@ -14,14 +14,21 @@ export interface AppControllerDelegate {
     willLoad(): void;
     didLoad(): void;
     didAbortLoad(): void;
-    didCommitState(state: AppState): void;
+    didCommitState(state: AppState, ancestorStates: AppState[]): void;
 }
 export declare class AppController {
     app: App;
-    private _priv;
+    private history;
+    private navigationController;
+    private delegates;
     constructor(app: App, history: History);
     start(preloadData?: PreloadData): void;
-    load(uri: ParsedURI): void;
+    load(uri: ParsedURI, options?: {
+        stacked: boolean;
+        returnToParent: boolean;
+    }): void;
     subscribe(delegate: AppControllerDelegate): void;
     getLoader(): Loader;
+    private loadState;
+    private matchRoute(uri);
 }

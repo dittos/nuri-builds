@@ -13,8 +13,8 @@ function render(app, container, preloadData) {
         willLoad: function () { },
         didLoad: function () { },
         didAbortLoad: function () { },
-        didCommitState: function (state) {
-            view.setState(state);
+        didCommitState: function (state, ancestorStates) {
+            view.setState(state, ancestorStates);
         }
     });
     controller.start(preloadData);

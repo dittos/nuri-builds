@@ -13,115 +13,89 @@ function injectLoader(loader) {
 exports.injectLoader = injectLoader;
 var AppController = /** @class */ (function () {
     function AppController(app, history) {
+        var _this = this;
         this.app = app;
-        this._priv = new AppControllerPrivate(app, history);
+        this.history = history;
+        this.loadState = function (_a) {
+            var uri = _a.uri, stacked = _a.stacked;
+            var _b = _this.matchRoute(uri), handler = _b.handler, params = _b.params;
+            var load = handler.load;
+            if (!load) {
+                return Observable_1.Observable.of({
+                    handler: handler,
+                    data: {},
+                });
+            }
+            var request = app_1.createRequest({
+                app: _this.app,
+                loader: _loader,
+                path: uri.path,
+                query: uri.query,
+                params: params,
+                stacked: stacked,
+            });
+            return Observable_1.Observable.defer(function () { return load(request); })
+                .map(function (response) {
+                if (app_1.isRedirect(response)) {
+                    return response;
+                }
+                else {
+                    var data = response;
+                    return {
+                        handler: handler,
+                        data: data,
+                    };
+                }
+            });
+        };
+        var delegates = [];
+        this.delegates = delegates;
+        this.navigationController = new navigation_1.NavigationController({
+            willLoad: function () {
+                delegates.forEach(function (delegate) { return delegate.willLoad(); });
+            },
+            didLoad: function () {
+                delegates.forEach(function (delegate) { return delegate.didLoad(); });
+            },
+            didAbortLoad: function () {
+                delegates.forEach(function (delegate) { return delegate.didAbortLoad(); });
+            },
+            didCommitLoad: function (state, ancestorStates) {
+                delegates.forEach(function (delegate) { return delegate.didCommitState(state, ancestorStates); });
+            },
+        }, this.loadState, history);
     }
     AppController.prototype.start = function (preloadData) {
-        this._priv.start(preloadData);
-    };
-    AppController.prototype.load = function (uri) {
-        this._priv.load(uri);
-    };
-    AppController.prototype.subscribe = function (delegate) {
-        this._priv.subscribe(delegate);
-    };
-    AppController.prototype.getLoader = function () {
-        return _loader;
-    };
-    return AppController;
-}());
-exports.AppController = AppController;
-var AppControllerPrivate = /** @class */ (function () {
-    function AppControllerPrivate(app, history) {
-        this.app = app;
-        this._history = history;
-        this._navigationController = new navigation_1.NavigationController(this);
-        this._delegates = [];
-    }
-    AppControllerPrivate.prototype.start = function (preloadData) {
-        var _this = this;
-        this._history.locationChanges().subscribe(function (loc) {
-            _this._navigationController.pop(loc);
-        });
-        var location = this._history.getLocation();
         var preloadState;
         if (preloadData) {
-            var matchedRequest = this._matchRoute(location.uri);
+            var location_1 = this.history.getLocation();
+            var matchedRequest = this.matchRoute(location_1.uri);
             preloadState = {
                 handler: matchedRequest.handler,
                 data: preloadData,
             };
         }
-        this._navigationController.start(location, preloadState);
+        this.navigationController.start(preloadState);
     };
-    AppControllerPrivate.prototype.subscribe = function (delegate) {
-        this._delegates.push(delegate);
-    };
-    AppControllerPrivate.prototype.willLoad = function () {
-        this._delegates.forEach(function (delegate) { return delegate.willLoad(); });
-    };
-    AppControllerPrivate.prototype.didLoad = function () {
-        this._delegates.forEach(function (delegate) { return delegate.didLoad(); });
-    };
-    AppControllerPrivate.prototype.didAbortLoad = function () {
-        this._delegates.forEach(function (delegate) { return delegate.didAbortLoad(); });
-    };
-    AppControllerPrivate.prototype.didCommitLoad = function (type, _a) {
-        var uri = _a.uri, token = _a.token, state = _a.state;
-        switch (type) {
-            case 'replace':
-                this._history.setHistoryToken(token);
-                break;
-            case 'push':
-                this._history.pushLocation({ uri: uri, token: token });
-                break;
-            case 'pop':
-                // Keep history untouched as the event originates from history
-                break;
-        }
-        this._delegates.forEach(function (delegate) { return delegate.didCommitState(state); });
-    };
-    AppControllerPrivate.prototype.load = function (uri) {
-        if (this._history.doesPushLocationRefreshPage()) {
-            this._history.pushLocation({ uri: uri, token: null });
+    AppController.prototype.load = function (uri, options) {
+        if (options === void 0) { options = { stacked: false, returnToParent: false }; }
+        if (options.returnToParent && this.navigationController.hasParent()) {
+            this.navigationController.returnToParent();
         }
         else {
-            this._navigationController.push(uri);
+            this.navigationController.push(uri, options);
         }
     };
-    AppControllerPrivate.prototype.loadState = function (uri) {
-        var _a = this._matchRoute(uri), handler = _a.handler, params = _a.params;
-        var load = handler.load;
-        if (!load) {
-            return Observable_1.Observable.of({
-                handler: handler,
-                data: {},
-            });
-        }
-        var request = app_1.createRequest({
-            app: this.app,
-            loader: _loader,
-            path: uri.path,
-            query: uri.query,
-            params: params,
-        });
-        return Observable_1.Observable.defer(function () { return load(request); })
-            .map(function (response) {
-            if (app_1.isRedirect(response)) {
-                return response;
-            }
-            else {
-                var data = response;
-                return {
-                    handler: handler,
-                    data: data,
-                };
-            }
-        });
+    AppController.prototype.subscribe = function (delegate) {
+        this.delegates.push(delegate);
     };
-    AppControllerPrivate.prototype._matchRoute = function (uri) {
+    AppController.prototype.getLoader = function () {
+        return _loader;
+    };
+    AppController.prototype.matchRoute = function (uri) {
         return app_1.matchRoute(this.app, uri);
     };
-    return AppControllerPrivate;
+    return AppController;
 }());
+exports.AppController = AppController;
 //# sourceMappingURL=controller.js.map

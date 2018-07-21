@@ -43,6 +43,9 @@ var BrowserHistory = /** @class */ (function () {
     BrowserHistory.prototype.doesPushLocationRefreshPage = function () {
         return false;
     };
+    BrowserHistory.prototype.back = function () {
+        history.back();
+    };
     return BrowserHistory;
 }());
 exports.BrowserHistory = BrowserHistory;
@@ -71,6 +74,9 @@ var FallbackHistory = /** @class */ (function () {
     };
     FallbackHistory.prototype.doesPushLocationRefreshPage = function () {
         return true;
+    };
+    FallbackHistory.prototype.back = function () {
+        history.back();
     };
     return FallbackHistory;
 }());

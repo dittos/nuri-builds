@@ -18,6 +18,8 @@ export declare function Link(props: {
     };
     onClick: any;
     target?: string;
+    stacked?: boolean;
+    returnToParent?: boolean;
 }, context: {
     controller?: AppController;
 }): JSX.Element;
