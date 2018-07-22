@@ -135,7 +135,7 @@ var NavigationController = /** @class */ (function () {
                 throw new Error('Cycle detected');
             }
             if (e) {
-                ancestors.push(e.state);
+                ancestors.unshift(e.state);
             }
         }
         return ancestors;
