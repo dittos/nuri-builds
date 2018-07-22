@@ -11,7 +11,7 @@ export declare class ControllerProvider extends React.Component<any> {
         controller: any;
     };
 }
-export declare function Link(props: {
+export interface LinkProps {
     to: string;
     queryParams?: {
         [key: string]: any;
@@ -20,7 +20,8 @@ export declare function Link(props: {
     target?: string;
     stacked?: boolean;
     returnToParent?: boolean;
-}, context: {
+}
+export declare function Link(props: LinkProps, context: {
     controller?: AppController;
 }): JSX.Element;
 export declare function createRouteElement(component: RouteComponent | undefined | null, props: {
