@@ -16,7 +16,7 @@ export declare function Link(props: {
     queryParams?: {
         [key: string]: any;
     };
-    onClick: any;
+    onClick?: any;
     target?: string;
     stacked?: boolean;
     returnToParent?: boolean;
