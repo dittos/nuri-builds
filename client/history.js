@@ -40,6 +40,10 @@ var BrowserHistory = /** @class */ (function () {
         var token = _a.token, uri = _a.uri;
         history.pushState({ token: token }, '', util_1.uriToString(uri));
     };
+    BrowserHistory.prototype.replaceLocation = function (_a) {
+        var token = _a.token, uri = _a.uri;
+        history.replaceState({ token: token }, '', util_1.uriToString(uri));
+    };
     BrowserHistory.prototype.doesPushLocationRefreshPage = function () {
         return false;
     };
@@ -74,6 +78,10 @@ var FallbackHistory = /** @class */ (function () {
     };
     FallbackHistory.prototype.doesPushLocationRefreshPage = function () {
         return true;
+    };
+    FallbackHistory.prototype.replaceLocation = function (_a) {
+        var uri = _a.uri;
+        window.location.replace(util_1.uriToString(uri));
     };
     FallbackHistory.prototype.back = function () {
         history.back();

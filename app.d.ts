@@ -28,9 +28,13 @@ export declare type RouteMatch = {
     };
 };
 export declare type Loader = any;
+export declare type RedirectOptions = {
+    stacked?: boolean;
+};
 export declare class Redirect {
     uri: string;
-    constructor(uri: string);
+    options: RedirectOptions;
+    constructor(uri: string | ParsedURI, options?: RedirectOptions);
 }
 export declare function isRedirect(obj: any): boolean;
 export declare type BaseRequest = {
@@ -46,7 +50,7 @@ export declare type BaseRequest = {
     stacked?: boolean;
 };
 export declare type Request = BaseRequest & {
-    redirect: (uri: string) => Promise<Redirect>;
+    redirect: (uri: string | ParsedURI, options?: RedirectOptions) => Promise<Redirect>;
 };
 export declare function createRequest(base: BaseRequest): Request;
 export declare type PreloadData = WireObject;

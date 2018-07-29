@@ -49,8 +49,7 @@ var NavigationController = /** @class */ (function () {
             return;
         }
         this.abortLoad();
-        var parentToken = options.stacked && this.currentEntry ? this.currentEntry.token : null;
-        this.navigate('push', uri, uuid_1.v4(), parentToken);
+        this.navigate('push', uri, uuid_1.v4(), options.stacked);
     };
     NavigationController.prototype.hasParent = function () {
         return this.currentEntry ? this.currentEntry.parentToken != null : false;
@@ -75,11 +74,12 @@ var NavigationController = /** @class */ (function () {
             this.delegate.didAbortLoad();
         }
     };
-    NavigationController.prototype.navigate = function (type, uri, token, parentToken) {
+    NavigationController.prototype.navigate = function (type, uri, token, stacked) {
         var _this = this;
-        if (parentToken === void 0) { parentToken = null; }
+        if (stacked === void 0) { stacked = false; }
+        var sourceToken = this.currentEntry ? this.currentEntry.token : null;
         this.delegate.willLoad();
-        this.loadSubscription = this.load(uri, token, parentToken).subscribe(function (entry) {
+        this.loadSubscription = this.load(uri, token, sourceToken, stacked).subscribe(function (entry) {
             _this.delegate.didLoad();
             if (entry.isRedirect && type === 'pop') {
                 // 'pop' does not apply changed uri to address bar
@@ -89,13 +89,13 @@ var NavigationController = /** @class */ (function () {
             _this.commit(type, entry);
         }); // TODO: handle onError
     };
-    NavigationController.prototype.load = function (uri, token, parentToken, isRedirect) {
+    NavigationController.prototype.load = function (uri, token, sourceToken, isStacked, isRedirect) {
         var _this = this;
         if (isRedirect === void 0) { isRedirect = false; }
-        return this.stateLoader({ uri: uri, stacked: parentToken != null })
+        return this.stateLoader({ uri: uri, stacked: isStacked && sourceToken != null })
             .switchMap(function (result) {
             if (result instanceof app_1.Redirect) {
-                return _this.load(util_1.parseURI(result.uri), uuid_1.v4(), parentToken, true);
+                return _this.load(util_1.parseURI(result.uri), uuid_1.v4(), sourceToken, result.options.stacked || false, true);
             }
             else {
                 return Observable_1.Observable.of({
@@ -103,7 +103,7 @@ var NavigationController = /** @class */ (function () {
                     token: token,
                     state: result,
                     isRedirect: isRedirect,
-                    parentToken: parentToken,
+                    parentToken: isStacked ? sourceToken : null,
                 });
             }
         });
@@ -113,7 +113,12 @@ var NavigationController = /** @class */ (function () {
         this.entries[entry.token] = entry;
         switch (type) {
             case 'replace':
-                this.history.setHistoryToken(entry.token);
+                if (entry.isRedirect) {
+                    this.history.replaceLocation({ uri: entry.uri, token: entry.token });
+                }
+                else {
+                    this.history.setHistoryToken(entry.token);
+                }
                 break;
             case 'push':
                 this.history.pushLocation({ uri: entry.uri, token: entry.token });

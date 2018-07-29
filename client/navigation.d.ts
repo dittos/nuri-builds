@@ -40,8 +40,8 @@ export declare class NavigationController<T> {
     returnToParent(): void;
     private pop(location);
     private abortLoad();
-    private navigate(type, uri, token, parentToken?);
-    private load(uri, token, parentToken, isRedirect?);
+    private navigate(type, uri, token, stacked?);
+    private load(uri, token, sourceToken, isStacked, isRedirect?);
     private commit(type, entry);
     private getAncestorStates();
 }
