@@ -21,7 +21,7 @@ export interface LinkProps {
     stacked?: boolean;
     returnToParent?: boolean;
 }
-export declare function Link(props: LinkProps, context: {
+export declare function Link(props: LinkProps & React.AnchorHTMLAttributes<any>, context: {
     controller?: AppController;
 }): JSX.Element;
 export declare function createRouteElement(component: RouteComponent | undefined | null, props: {
