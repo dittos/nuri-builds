@@ -10,12 +10,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pathToRegexp = require("path-to-regexp");
 var isFunction = require("lodash/isFunction");
-var isString = require("lodash/isString");
 var util_1 = require("./util");
 var Redirect = /** @class */ (function () {
     function Redirect(uri, options) {
         if (options === void 0) { options = { stacked: false }; }
-        this.uri = isString(uri) ? uri : util_1.uriToString(uri);
+        this.uri = util_1.uriToString(uri);
         this.options = options;
     }
     return Redirect;

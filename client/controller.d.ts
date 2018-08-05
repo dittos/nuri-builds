@@ -23,7 +23,7 @@ export declare class AppController {
     private delegates;
     constructor(app: App, history: History);
     start(preloadData?: PreloadData): void;
-    load(uri: ParsedURI, options?: {
+    load(uri: ParsedURI | string, options?: {
         stacked: boolean;
         returnToParent: boolean;
     }): void;

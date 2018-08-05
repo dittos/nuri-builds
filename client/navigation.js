@@ -6,7 +6,6 @@ require("rxjs/add/observable/of");
 require("rxjs/add/operator/switchMap");
 var Subscription_1 = require("rxjs/Subscription");
 var app_1 = require("../app");
-var util_1 = require("../util");
 var NavigationController = /** @class */ (function () {
     function NavigationController(delegate, stateLoader, history) {
         this.delegate = delegate;
@@ -95,7 +94,7 @@ var NavigationController = /** @class */ (function () {
         return this.stateLoader({ uri: uri, stacked: isStacked && sourceToken != null })
             .switchMap(function (result) {
             if (result instanceof app_1.Redirect) {
-                return _this.load(util_1.parseURI(result.uri), uuid_1.v4(), sourceToken, result.options.stacked || false, true);
+                return _this.load(result.uri, uuid_1.v4(), sourceToken, result.options.stacked || false, true);
             }
             else {
                 return Observable_1.Observable.of({

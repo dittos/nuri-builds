@@ -2,17 +2,16 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/switchMap';
 import { Redirect } from '../app';
-import { ParsedURI } from '../app';
 import { History } from './history';
 export declare type NavigationEntry<T> = {
-    uri: ParsedURI;
+    uri: string;
     token: string;
     state: T;
     isRedirect: boolean;
     parentToken: string | null;
 };
 export interface LoadRequest {
-    uri: ParsedURI;
+    uri: string;
     stacked: boolean;
 }
 export declare type LoadResult<T> = T | Redirect;
@@ -33,7 +32,7 @@ export declare class NavigationController<T> {
     private loadSubscription;
     constructor(delegate: NavigationControllerDelegate<T>, stateLoader: StateLoader<T>, history: History);
     start(preloadState?: T): void;
-    push(uri: ParsedURI, options?: {
+    push(uri: string, options?: {
         stacked: boolean;
     }): void;
     hasParent(): boolean;

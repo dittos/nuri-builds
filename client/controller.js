@@ -6,6 +6,7 @@ require("rxjs/add/observable/of");
 require("rxjs/add/operator/map");
 var app_1 = require("../app");
 var navigation_1 = require("./navigation");
+var util_1 = require("../util");
 var _loader;
 function injectLoader(loader) {
     _loader = loader;
@@ -18,7 +19,8 @@ var AppController = /** @class */ (function () {
         this.history = history;
         this.loadState = function (_a) {
             var uri = _a.uri, stacked = _a.stacked;
-            var _b = _this.matchRoute(uri), handler = _b.handler, params = _b.params;
+            var parsedURI = util_1.parseURI(uri);
+            var _b = _this.matchRoute(parsedURI), handler = _b.handler, params = _b.params;
             var load = handler.load;
             if (!load) {
                 return Observable_1.Observable.of({
@@ -29,8 +31,8 @@ var AppController = /** @class */ (function () {
             var request = app_1.createRequest({
                 app: _this.app,
                 loader: _loader,
-                path: uri.path,
-                query: uri.query,
+                path: parsedURI.path,
+                query: parsedURI.query,
                 params: params,
                 stacked: stacked,
             });
@@ -69,7 +71,7 @@ var AppController = /** @class */ (function () {
         var preloadState;
         if (preloadData) {
             var location_1 = this.history.getLocation();
-            var matchedRequest = this.matchRoute(location_1.uri);
+            var matchedRequest = this.matchRoute(util_1.parseURI(location_1.uri));
             preloadState = {
                 handler: matchedRequest.handler,
                 data: preloadData,
@@ -83,7 +85,7 @@ var AppController = /** @class */ (function () {
             this.navigationController.returnToParent();
         }
         else {
-            this.navigationController.push(uri, options);
+            this.navigationController.push(util_1.uriToString(uri), options);
         }
     };
     AppController.prototype.subscribe = function (delegate) {

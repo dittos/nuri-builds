@@ -1,13 +1,10 @@
-/// <reference types="node" />
-import * as querystring from 'querystring';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
-import { ParsedURI } from '../app';
 export declare type Location = {
-    uri: ParsedURI;
+    uri: string;
     token: string | null;
 };
 export interface History {
@@ -22,17 +19,11 @@ export interface History {
 export declare function createHistory(): History;
 export declare class BrowserHistory implements History {
     locationChanges(): Observable<{
-        uri: {
-            path: string;
-            query: querystring.ParsedUrlQuery;
-        };
+        uri: string;
         token: any;
     }>;
     getLocation(): {
-        uri: {
-            path: string;
-            query: querystring.ParsedUrlQuery;
-        };
+        uri: string;
         token: any;
     };
     setHistoryToken(token: string): void;
@@ -43,10 +34,7 @@ export declare class BrowserHistory implements History {
 }
 export declare class FallbackHistory implements History {
     getLocation(): {
-        uri: {
-            path: string;
-            query: querystring.ParsedUrlQuery;
-        };
+        uri: string;
         token: null;
     };
     setHistoryToken(token: string): void;

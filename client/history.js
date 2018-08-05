@@ -1,12 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var querystring = require("querystring");
 var Observable_1 = require("rxjs/Observable");
 require("rxjs/add/observable/fromEvent");
 require("rxjs/add/observable/never");
 require("rxjs/add/operator/filter");
 require("rxjs/add/operator/map");
-var util_1 = require("../util");
 function createHistory() {
     if (supportsHistory())
         return new BrowserHistory();
@@ -25,10 +23,7 @@ var BrowserHistory = /** @class */ (function () {
     };
     BrowserHistory.prototype.getLocation = function () {
         return {
-            uri: {
-                path: location.pathname,
-                query: querystring.parse(location.search.substring(1)),
-            },
+            uri: location.pathname + location.search,
             token: history.state && history.state.token,
         };
     };
@@ -38,11 +33,11 @@ var BrowserHistory = /** @class */ (function () {
     };
     BrowserHistory.prototype.pushLocation = function (_a) {
         var token = _a.token, uri = _a.uri;
-        history.pushState({ token: token }, '', util_1.uriToString(uri));
+        history.pushState({ token: token }, '', uri);
     };
     BrowserHistory.prototype.replaceLocation = function (_a) {
         var token = _a.token, uri = _a.uri;
-        history.replaceState({ token: token }, '', util_1.uriToString(uri));
+        history.replaceState({ token: token }, '', uri);
     };
     BrowserHistory.prototype.doesPushLocationRefreshPage = function () {
         return false;
@@ -58,10 +53,7 @@ var FallbackHistory = /** @class */ (function () {
     }
     FallbackHistory.prototype.getLocation = function () {
         return {
-            uri: {
-                path: location.pathname,
-                query: querystring.parse(location.search.substring(1)),
-            },
+            uri: location.pathname + location.search,
             token: null,
         };
     };
@@ -74,14 +66,14 @@ var FallbackHistory = /** @class */ (function () {
     };
     FallbackHistory.prototype.pushLocation = function (_a) {
         var uri = _a.uri;
-        window.location.href = util_1.uriToString(uri);
+        window.location.href = uri;
     };
     FallbackHistory.prototype.doesPushLocationRefreshPage = function () {
         return true;
     };
     FallbackHistory.prototype.replaceLocation = function (_a) {
         var uri = _a.uri;
-        window.location.replace(util_1.uriToString(uri));
+        window.location.replace(uri);
     };
     FallbackHistory.prototype.back = function () {
         history.back();
