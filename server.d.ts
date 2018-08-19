@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { App, WireObject, PreloadData, Loader } from './app';
 export declare type ServerRequest = {
+    url: string;
     path: string;
     query: {
         [key: string]: string;

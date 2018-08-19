@@ -31,6 +31,7 @@ var AppController = /** @class */ (function () {
             var request = app_1.createRequest({
                 app: _this.app,
                 loader: _loader,
+                uri: uri,
                 path: parsedURI.path,
                 query: parsedURI.query,
                 params: params,

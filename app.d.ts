@@ -40,6 +40,7 @@ export declare function isRedirect(obj: any): boolean;
 export declare type BaseRequest = {
     app: App;
     loader: Loader;
+    uri: string;
     path: string;
     query: {
         [key: string]: any;

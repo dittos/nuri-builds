@@ -15,6 +15,7 @@ function render(app, serverRequest) {
     var request = app_1.createRequest({
         app: app,
         loader: _loaderFactory(serverRequest),
+        uri: serverRequest.url,
         path: serverRequest.path,
         query: serverRequest.query,
         params: params,
