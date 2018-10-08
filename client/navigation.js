@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var uuid_1 = require("uuid");
+var generateToken = require("nanoid/non-secure");
 var Observable_1 = require("rxjs/Observable");
 require("rxjs/add/observable/of");
 require("rxjs/add/operator/switchMap");
@@ -12,6 +12,7 @@ var NavigationController = /** @class */ (function () {
         this.stateLoader = stateLoader;
         this.history = history;
         this.entries = {};
+        this.entryTokens = [];
         this.currentEntry = null;
         this.started = false;
         this.loadSubscription = Subscription_1.Subscription.EMPTY;
@@ -31,14 +32,14 @@ var NavigationController = /** @class */ (function () {
         if (shouldUsePreloadData && preloadState) {
             this.commit('replace', {
                 uri: location.uri,
-                token: uuid_1.v4(),
+                token: generateToken(),
                 state: preloadState,
                 isRedirect: false,
                 parentToken: null,
             });
         }
         else {
-            this.navigate('replace', location.uri, uuid_1.v4());
+            this.navigate('replace', location.uri, generateToken());
         }
     };
     NavigationController.prototype.push = function (uri, options) {
@@ -48,7 +49,7 @@ var NavigationController = /** @class */ (function () {
             return;
         }
         this.abortLoad();
-        this.navigate('push', uri, uuid_1.v4(), options.stacked);
+        this.navigate('push', uri, generateToken(), options.stacked);
     };
     NavigationController.prototype.hasParent = function () {
         return this.currentEntry ? this.currentEntry.parentToken != null : false;
@@ -64,7 +65,7 @@ var NavigationController = /** @class */ (function () {
             this.commit('pop', loadedEntry);
         }
         else {
-            this.navigate('pop', location.uri, token || uuid_1.v4());
+            this.navigate('pop', location.uri, token || generateToken());
         }
     };
     NavigationController.prototype.abortLoad = function () {
@@ -94,7 +95,7 @@ var NavigationController = /** @class */ (function () {
         return this.stateLoader({ uri: uri, stacked: isStacked && sourceToken != null })
             .switchMap(function (result) {
             if (result instanceof app_1.Redirect) {
-                return _this.load(result.uri, uuid_1.v4(), sourceToken, result.options.stacked || false, true);
+                return _this.load(result.uri, generateToken(), sourceToken, result.options.stacked || false, true);
             }
             else {
                 return Observable_1.Observable.of({
@@ -110,6 +111,8 @@ var NavigationController = /** @class */ (function () {
     NavigationController.prototype.commit = function (type, entry) {
         this.currentEntry = entry;
         this.entries[entry.token] = entry;
+        this.entryTokens.push(entry.token);
+        this.pruneOldEntries();
         switch (type) {
             case 'replace':
                 if (entry.isRedirect) {
@@ -143,6 +146,37 @@ var NavigationController = /** @class */ (function () {
             }
         }
         return ancestors;
+    };
+    NavigationController.prototype.pruneOldEntries = function (maxSize) {
+        var _this = this;
+        if (maxSize === void 0) { maxSize = 5; }
+        var e = this.currentEntry;
+        var keep = {};
+        while (e && e.parentToken) {
+            keep[e.token] = true;
+            e = this.entries[e.parentToken];
+            if (keep[e.token]) {
+                throw new Error('Cycle detected');
+            }
+        }
+        var cachedCount = 0;
+        for (var i = this.entryTokens.length - 1; i >= 0; i--) {
+            var token = this.entryTokens[i];
+            if (keep[token]) {
+                continue;
+            }
+            keep[token] = true;
+            cachedCount++;
+            if (cachedCount >= maxSize) {
+                break;
+            }
+        }
+        Object.keys(this.entries).forEach(function (token) {
+            if (!keep[token]) {
+                delete _this.entries[token];
+            }
+        });
+        this.entryTokens = this.entryTokens.filter(function (token) { return _this.entries[token]; });
     };
     return NavigationController;
 }());

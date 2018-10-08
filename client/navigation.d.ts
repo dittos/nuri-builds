@@ -27,6 +27,7 @@ export declare class NavigationController<T> {
     private stateLoader;
     private history;
     private entries;
+    private entryTokens;
     private currentEntry;
     private started;
     private loadSubscription;
@@ -43,4 +44,5 @@ export declare class NavigationController<T> {
     private load(uri, token, sourceToken, isStacked, isRedirect?);
     private commit(type, entry);
     private getAncestorStates();
+    private pruneOldEntries(maxSize?);
 }
