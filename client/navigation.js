@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var generateToken = require("nanoid/non-secure");
-var Observable_1 = require("rxjs/Observable");
-require("rxjs/add/observable/of");
-require("rxjs/add/operator/switchMap");
-var Subscription_1 = require("rxjs/Subscription");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
 var NavigationController = /** @class */ (function () {
     function NavigationController(delegate, stateLoader, history) {
@@ -15,7 +13,7 @@ var NavigationController = /** @class */ (function () {
         this.entryTokens = [];
         this.currentEntry = null;
         this.started = false;
-        this.loadSubscription = Subscription_1.Subscription.EMPTY;
+        this.loadSubscription = rxjs_1.Subscription.EMPTY;
     }
     NavigationController.prototype.start = function (preloadState) {
         var _this = this;
@@ -93,12 +91,12 @@ var NavigationController = /** @class */ (function () {
         var _this = this;
         if (isRedirect === void 0) { isRedirect = false; }
         return this.stateLoader({ uri: uri, stacked: isStacked && sourceToken != null })
-            .switchMap(function (result) {
+            .pipe(operators_1.switchMap(function (result) {
             if (result instanceof app_1.Redirect) {
                 return _this.load(result.uri, generateToken(), sourceToken, result.options.stacked || false, true);
             }
             else {
-                return Observable_1.Observable.of({
+                return rxjs_1.of({
                     uri: uri,
                     token: token,
                     state: result,
@@ -106,7 +104,7 @@ var NavigationController = /** @class */ (function () {
                     parentToken: isStacked ? sourceToken : null,
                 });
             }
-        });
+        }));
     };
     NavigationController.prototype.commit = function (type, entry) {
         this.currentEntry = entry;

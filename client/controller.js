@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Observable_1 = require("rxjs/Observable");
-require("rxjs/add/observable/defer");
-require("rxjs/add/observable/of");
-require("rxjs/add/operator/map");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
 var navigation_1 = require("./navigation");
 var util_1 = require("../util");
@@ -23,7 +21,7 @@ var AppController = /** @class */ (function () {
             var _b = _this.matchRoute(parsedURI), handler = _b.handler, params = _b.params;
             var load = handler.load;
             if (!load) {
-                return Observable_1.Observable.of({
+                return rxjs_1.of({
                     handler: handler,
                     data: {},
                 });
@@ -37,8 +35,8 @@ var AppController = /** @class */ (function () {
                 params: params,
                 stacked: stacked,
             });
-            return Observable_1.Observable.defer(function () { return load(request); })
-                .map(function (response) {
+            return rxjs_1.defer(function () { return load(request); })
+                .pipe(operators_1.map(function (response) {
                 if (app_1.isRedirect(response)) {
                     return response;
                 }
@@ -49,7 +47,7 @@ var AppController = /** @class */ (function () {
                         data: data,
                     };
                 }
-            });
+            }));
         };
         var delegates = [];
         this.delegates = delegates;

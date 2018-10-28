@@ -1,6 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs';
 import { Redirect } from '../app';
 import { History } from './history';
 export declare type NavigationEntry<T> = {

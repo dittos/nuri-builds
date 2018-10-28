@@ -1,10 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Observable_1 = require("rxjs/Observable");
-require("rxjs/add/observable/fromEvent");
-require("rxjs/add/observable/never");
-require("rxjs/add/operator/filter");
-require("rxjs/add/operator/map");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 function createHistory() {
     if (supportsHistory())
         return new BrowserHistory();
@@ -17,9 +14,8 @@ var BrowserHistory = /** @class */ (function () {
     }
     BrowserHistory.prototype.locationChanges = function () {
         var _this = this;
-        return Observable_1.Observable.fromEvent(window, 'popstate')
-            .filter(function (event) { return event.state !== undefined; })
-            .map(function () { return _this.getLocation(); });
+        return rxjs_1.fromEvent(window, 'popstate')
+            .pipe(operators_1.filter(function (event) { return event.state !== undefined; }), operators_1.map(function () { return _this.getLocation(); }));
     };
     BrowserHistory.prototype.getLocation = function () {
         return {
@@ -62,7 +58,7 @@ var FallbackHistory = /** @class */ (function () {
         // ignored
     };
     FallbackHistory.prototype.locationChanges = function () {
-        return Observable_1.Observable.never();
+        return rxjs_1.never();
     };
     FallbackHistory.prototype.pushLocation = function (_a) {
         var uri = _a.uri;

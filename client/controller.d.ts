@@ -1,6 +1,3 @@
-import 'rxjs/add/observable/defer';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
 import { App, PreloadData, Loader, WireObject, RouteHandler, ParsedURI } from '../app';
 import { History } from './history';
 export declare function injectLoader(loader: Loader): void;

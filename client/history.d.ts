@@ -1,8 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/never';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
 export declare type Location = {
     uri: string;
     token: string | null;
