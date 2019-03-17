@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ReactDOMServer = require("react-dom/server");
 var app_1 = require("./app");
 var components_1 = require("./components");
+var bootstrap_1 = require("./bootstrap");
 var _loaderFactory;
 function injectLoaderFactory(loaderFactory) {
     _loaderFactory = loaderFactory;
@@ -51,7 +52,10 @@ function createResult(request, handler, response, errorStatus) {
         errorStatus: errorStatus,
         element: element,
         getHTML: function () {
-            return ReactDOMServer.renderToString(element);
+            if (errorStatus) {
+                return '';
+            }
+            return bootstrap_1.wrapHTML(ReactDOMServer.renderToString(element));
         }
     };
 }
