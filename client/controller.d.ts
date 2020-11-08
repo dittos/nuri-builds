@@ -2,7 +2,7 @@ import { App, PreloadData, Loader, WireObject, RouteHandler, ParsedURI } from '.
 import { History } from './history';
 export declare function injectLoader(loader: Loader): void;
 export declare type AppState = {
-    handler: RouteHandler;
+    handler: RouteHandler<any>;
     data: WireObject;
     scrollX?: number;
     scrollY?: number;

@@ -8,6 +8,6 @@ export declare class AppView {
     constructor(controller: AppController, container: Node);
     setState(state: AppState, ancestorStates: AppState[]): void;
     _render(): void;
-    writeData(state: AppState, updater: DataUpdater): void;
+    writeData(state: AppState, updater: DataUpdater<any>): void;
     _onScrollChange(x: number, y: number): void;
 }

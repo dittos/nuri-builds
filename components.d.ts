@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { DataUpdater, WireObject, RouteComponent, Loader } from './app';
+import { RouteComponent, RouteComponentProps } from './app';
 import { AppController } from './client/controller';
 export declare class ControllerProvider extends React.Component<any> {
     static childContextTypes: {
@@ -24,9 +24,4 @@ export interface LinkProps {
 export declare function Link(props: LinkProps & React.AnchorHTMLAttributes<any>, context: {
     controller?: AppController;
 }): JSX.Element;
-export declare function createRouteElement(component: RouteComponent | undefined | null, props: {
-    controller?: AppController;
-    data: WireObject;
-    writeData: (updater: DataUpdater) => void;
-    loader: Loader;
-}): React.ReactElement<any>;
+export declare function createRouteElement<D>(component: RouteComponent<D> | undefined | null, props: RouteComponentProps<D>): React.ReactElement<any>;

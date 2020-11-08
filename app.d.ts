@@ -1,19 +1,26 @@
 /// <reference types="react" />
+import { AppController } from './client/controller';
 export declare type Route = {
     regexp: RegExp;
     keys: any[];
-    handler: RouteHandler;
+    handler: RouteHandler<any>;
 };
 export declare type WireObject = {
     [key: string]: any;
 };
-export declare type RouteComponent = React.ComponentType<any>;
-export declare type Response = WireObject | Redirect;
-export declare type RouteHandler = {
-    component?: RouteComponent;
-    load?: (request: Request) => Promise<Response>;
-    renderTitle?: (data: WireObject) => string;
-    renderMeta?: (data: WireObject) => WireObject;
+export declare type RouteComponentProps<D> = {
+    controller?: AppController;
+    data: D;
+    writeData: (updater: DataUpdater<D>) => void;
+    loader: Loader;
+};
+export declare type RouteComponent<D> = React.ComponentType<RouteComponentProps<D>>;
+export declare type Response<D> = D | Redirect;
+export declare type RouteHandler<D> = {
+    component?: RouteComponent<D>;
+    load?: (request: Request) => Promise<Response<D>>;
+    renderTitle?: (data: D) => string;
+    renderMeta?: (data: D) => WireObject;
 };
 export declare type ParsedURI = {
     path: string;
@@ -22,7 +29,7 @@ export declare type ParsedURI = {
     };
 };
 export declare type RouteMatch = {
-    handler: RouteHandler;
+    handler: RouteHandler<any>;
     params: {
         [key: string]: any;
     };
@@ -36,7 +43,7 @@ export declare class Redirect {
     options: RedirectOptions;
     constructor(uri: string | ParsedURI, options?: RedirectOptions);
 }
-export declare function isRedirect(obj: any): boolean;
+export declare function isRedirect(obj: any): obj is Redirect;
 export declare type BaseRequest = {
     app: App;
     loader: Loader;
@@ -57,12 +64,12 @@ export declare function createRequest(base: BaseRequest): Request;
 export declare type PreloadData = WireObject;
 export declare class App {
     routes: Route[];
-    defaultHandler: RouteHandler;
+    defaultHandler: RouteHandler<any>;
     title: string | ((routeTitle?: string) => string);
     constructor();
-    route(path: string, handler: RouteHandler): void;
+    route<D>(path: string, handler: RouteHandler<D>): void;
 }
 export declare function createApp(): App;
 export declare function matchRoute(app: App, uri: ParsedURI): RouteMatch;
-export declare function renderTitle(app: App, handler: RouteHandler, data: WireObject): string;
-export declare type DataUpdater = (data: WireObject) => void;
+export declare function renderTitle<D>(app: App, handler: RouteHandler<D>, data: D): string;
+export declare type DataUpdater<D> = (data: D) => void;
