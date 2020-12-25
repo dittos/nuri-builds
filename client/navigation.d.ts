@@ -36,11 +36,11 @@ export declare class NavigationController<T> {
     }): void;
     hasParent(): boolean;
     returnToParent(): void;
-    private pop(location);
-    private abortLoad();
-    private navigate(type, uri, token, stacked?);
-    private load(uri, token, sourceToken, isStacked, isRedirect?);
-    private commit(type, entry);
-    private getAncestorStates();
-    private pruneOldEntries(maxSize?);
+    private pop;
+    private abortLoad;
+    private navigate;
+    private load;
+    private commit;
+    private getAncestorStates;
+    private pruneOldEntries;
 }

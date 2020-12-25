@@ -1,5 +1,13 @@
 "use strict";
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppView = void 0;
 var ReactDOM = require("react-dom");
 var app_1 = require("../app");
 var components_1 = require("../components");
@@ -31,7 +39,7 @@ var AppView = /** @class */ (function () {
         var parent = this.ancestorStates.length > 0 ? this.ancestorStates[this.ancestorStates.length - 1] : null;
         var handler = state.handler, data = state.data, _a = state.scrollX, scrollX = _a === void 0 ? (parent && parent.scrollX) || 0 : _a, _b = state.scrollY, scrollY = _b === void 0 ? (parent && parent.scrollY) || 0 : _b;
         document.title = app_1.renderTitle(this.controller.app, handler, data);
-        var elements = this.ancestorStates.concat([state]).map(function (it) { return components_1.createRouteElement(it.handler.component, {
+        var elements = __spreadArrays(this.ancestorStates, [state]).map(function (it) { return components_1.createRouteElement(it.handler.component, {
             controller: _this.controller,
             data: it.data,
             writeData: _this.writeData.bind(_this, it),

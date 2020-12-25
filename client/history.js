@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FallbackHistory = exports.BrowserHistory = exports.createHistory = void 0;
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 function createHistory() {
@@ -15,6 +16,8 @@ var BrowserHistory = /** @class */ (function () {
     BrowserHistory.prototype.locationChanges = function () {
         var _this = this;
         return rxjs_1.fromEvent(window, 'popstate')
+            // Ignore extraneous popstate events in WebKit
+            // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
             .pipe(operators_1.filter(function (event) { return event.state !== undefined; }), operators_1.map(function () { return _this.getLocation(); }));
     };
     BrowserHistory.prototype.getLocation = function () {

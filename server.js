@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.render = exports.injectLoaderFactory = void 0;
 var ReactDOMServer = require("react-dom/server");
 var app_1 = require("./app");
 var components_1 = require("./components");

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { App, WireObject, PreloadData, Loader } from './app';
 export declare type ServerRequest = {

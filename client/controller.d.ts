@@ -27,5 +27,5 @@ export declare class AppController {
     subscribe(delegate: AppControllerDelegate): void;
     getLoader(): Loader;
     private loadState;
-    private matchRoute(uri);
+    private matchRoute;
 }

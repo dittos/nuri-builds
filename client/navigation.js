@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NavigationController = void 0;
 var generateToken = require("nanoid/non-secure");
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");

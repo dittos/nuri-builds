@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseURI = exports.uriToString = void 0;
 var querystring = require("querystring");
 var isString = require("lodash/isString");
 function uriToString(parsed) {
