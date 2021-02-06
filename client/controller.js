@@ -1,21 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppController = exports.injectLoader = void 0;
+exports.AppController = void 0;
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
 var navigation_1 = require("./navigation");
 var util_1 = require("../util");
-var _loader;
-function injectLoader(loader) {
-    _loader = loader;
-}
-exports.injectLoader = injectLoader;
 var AppController = /** @class */ (function () {
-    function AppController(app, history) {
+    function AppController(app, history, loader) {
         var _this = this;
         this.app = app;
         this.history = history;
+        this.loader = loader;
         this.loadState = function (_a) {
             var uri = _a.uri, stacked = _a.stacked;
             var parsedURI = util_1.parseURI(uri);
@@ -28,8 +24,7 @@ var AppController = /** @class */ (function () {
                 });
             }
             var request = app_1.createRequest({
-                app: _this.app,
-                loader: _loader,
+                loader: _this.loader,
                 uri: uri,
                 path: parsedURI.path,
                 query: parsedURI.query,
@@ -92,7 +87,7 @@ var AppController = /** @class */ (function () {
         this.delegates.push(delegate);
     };
     AppController.prototype.getLoader = function () {
-        return _loader;
+        return this.loader;
     };
     AppController.prototype.matchRoute = function (uri) {
         return app_1.matchRoute(this.app, uri);

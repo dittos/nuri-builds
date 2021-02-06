@@ -1,8 +1,7 @@
-import { App, PreloadData, Loader, WireObject, RouteHandler, ParsedURI } from '../app';
+import { App, PreloadData, WireObject, RouteHandler, ParsedURI } from '../app';
 import { History } from './history';
-export declare function injectLoader(loader: Loader): void;
 export declare type AppState = {
-    handler: RouteHandler<any>;
+    handler: RouteHandler<any, any>;
     data: WireObject;
     scrollX?: number;
     scrollY?: number;
@@ -13,19 +12,20 @@ export interface AppControllerDelegate {
     didAbortLoad(): void;
     didCommitState(state: AppState, ancestorStates: AppState[]): void;
 }
-export declare class AppController {
-    app: App;
+export declare class AppController<L> {
+    app: App<L>;
     private history;
+    private loader;
     private navigationController;
     private delegates;
-    constructor(app: App, history: History);
+    constructor(app: App<L>, history: History, loader: L);
     start(preloadData?: PreloadData): void;
     load(uri: ParsedURI | string, options?: {
         stacked: boolean;
         returnToParent: boolean;
     }): void;
     subscribe(delegate: AppControllerDelegate): void;
-    getLoader(): Loader;
+    getLoader(): L;
     private loadState;
     private matchRoute;
 }

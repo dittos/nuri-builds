@@ -1,15 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrap = exports.render = exports.injectLoader = void 0;
+exports.bootstrap = exports.render = void 0;
 var bootstrap_1 = require("../bootstrap");
 var controller_1 = require("./controller");
 var view_1 = require("./view");
 var history_1 = require("./history");
-var controller_2 = require("./controller");
-Object.defineProperty(exports, "injectLoader", { enumerable: true, get: function () { return controller_2.injectLoader; } });
-function render(app, container, preloadData) {
+function render(app, container, loader, preloadData) {
     var history = history_1.createHistory();
-    var controller = new controller_1.AppController(app, history);
+    var controller = new controller_1.AppController(app, history, loader);
     var view = new view_1.AppView(controller, container);
     controller.subscribe({
         willLoad: function () { },
@@ -23,17 +21,17 @@ function render(app, container, preloadData) {
     return controller;
 }
 exports.render = render;
-function bootstrap(app, callback) {
+function bootstrap(app, loader, callback) {
     var globalVariable = window[bootstrap_1.globalVariableName];
     if (!globalVariable) {
         // HTML is not rendered yet
         window[bootstrap_1.globalVariableName] = function (preloadData) {
             window[bootstrap_1.globalVariableName].preloadData = preloadData;
-            bootstrap(app, callback);
+            bootstrap(app, loader, callback);
         };
         return;
     }
-    var controller = render(app, document.getElementById(bootstrap_1.containerElementId), globalVariable.preloadData);
+    var controller = render(app, document.getElementById(bootstrap_1.containerElementId), loader, globalVariable.preloadData);
     callback(controller);
 }
 exports.bootstrap = bootstrap;

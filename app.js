@@ -10,9 +10,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isRedirect = exports.Redirect = void 0;
-var pathToRegexp = require("path-to-regexp");
+var path_to_regexp_1 = __importDefault(require("path-to-regexp"));
 var isFunction = require("lodash/isFunction");
 var util_1 = require("./util");
 var Redirect = /** @class */ (function () {
@@ -53,7 +56,7 @@ var App = /** @class */ (function () {
             return;
         }
         var keys = [];
-        var regexp = pathToRegexp(path, keys);
+        var regexp = path_to_regexp_1.default(path, keys);
         this.routes.push({
             regexp: regexp,
             keys: keys,

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NavigationController = void 0;
-var generateToken = require("nanoid/non-secure");
+var non_secure_1 = require("nanoid/non-secure");
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
@@ -31,14 +31,14 @@ var NavigationController = /** @class */ (function () {
         if (shouldUsePreloadData && preloadState) {
             this.commit('replace', {
                 uri: location.uri,
-                token: generateToken(),
+                token: non_secure_1.nanoid(),
                 state: preloadState,
                 isRedirect: false,
                 parentToken: null,
             });
         }
         else {
-            this.navigate('replace', location.uri, generateToken());
+            this.navigate('replace', location.uri, non_secure_1.nanoid());
         }
     };
     NavigationController.prototype.push = function (uri, options) {
@@ -48,7 +48,7 @@ var NavigationController = /** @class */ (function () {
             return;
         }
         this.abortLoad();
-        this.navigate('push', uri, generateToken(), options.stacked);
+        this.navigate('push', uri, non_secure_1.nanoid(), options.stacked);
     };
     NavigationController.prototype.hasParent = function () {
         return this.currentEntry ? this.currentEntry.parentToken != null : false;
@@ -64,7 +64,7 @@ var NavigationController = /** @class */ (function () {
             this.commit('pop', loadedEntry);
         }
         else {
-            this.navigate('pop', location.uri, token || generateToken());
+            this.navigate('pop', location.uri, token || non_secure_1.nanoid());
         }
     };
     NavigationController.prototype.abortLoad = function () {
@@ -94,7 +94,7 @@ var NavigationController = /** @class */ (function () {
         return this.stateLoader({ uri: uri, stacked: isStacked && sourceToken != null })
             .pipe(operators_1.switchMap(function (result) {
             if (result instanceof app_1.Redirect) {
-                return _this.load(result.uri, generateToken(), sourceToken, result.options.stacked || false, true);
+                return _this.load(result.uri, non_secure_1.nanoid(), sourceToken, result.options.stacked || false, true);
             }
             else {
                 return rxjs_1.of({

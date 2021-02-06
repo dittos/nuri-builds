@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { App, WireObject, PreloadData, Loader } from './app';
-export declare type ServerRequest = {
+import { App, WireObject, PreloadData } from './app';
+export interface ServerRequest {
     url: string;
     path: string;
     query: {
         [key: string]: string;
     };
-};
+}
 export declare type RenderResult = {
     preloadData: PreloadData;
     title: string;
@@ -16,5 +16,4 @@ export declare type RenderResult = {
     element?: React.ReactElement<any>;
     getHTML(): string;
 };
-export declare function injectLoaderFactory(loaderFactory: (serverRequest: ServerRequest) => Loader): void;
-export declare function render(app: App, serverRequest: ServerRequest): Promise<RenderResult>;
+export declare function render<L>(app: App<L>, serverRequest: ServerRequest, loader: L): Promise<RenderResult>;
