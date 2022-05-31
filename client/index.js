@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrap = exports.render = void 0;
+exports.bootstrap = exports.onPreloadDataReady = exports.render = void 0;
 var bootstrap_1 = require("../bootstrap");
 var controller_1 = require("./controller");
 var view_1 = require("./view");
@@ -21,18 +21,24 @@ function render(app, container, loader, preloadData) {
     return controller;
 }
 exports.render = render;
-function bootstrap(app, loader, callback) {
+function onPreloadDataReady(callback) {
     var globalVariable = window[bootstrap_1.globalVariableName];
     if (!globalVariable) {
         // HTML is not rendered yet
         window[bootstrap_1.globalVariableName] = function (preloadData) {
             window[bootstrap_1.globalVariableName].preloadData = preloadData;
-            bootstrap(app, loader, callback);
+            callback(preloadData);
         };
         return;
     }
-    var controller = render(app, document.getElementById(bootstrap_1.containerElementId), loader, globalVariable.preloadData);
-    callback(controller);
+    callback(globalVariable.preloadData);
+}
+exports.onPreloadDataReady = onPreloadDataReady;
+function bootstrap(app, loader, callback) {
+    onPreloadDataReady(function (preloadData) {
+        var controller = render(app, document.getElementById(bootstrap_1.containerElementId), loader, preloadData);
+        callback(controller);
+    });
 }
 exports.bootstrap = bootstrap;
 //# sourceMappingURL=index.js.map
