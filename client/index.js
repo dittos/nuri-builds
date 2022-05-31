@@ -23,7 +23,7 @@ function render(app, container, loader, preloadData) {
 exports.render = render;
 function onPreloadDataReady(callback) {
     var globalVariable = window[bootstrap_1.globalVariableName];
-    if (!globalVariable) {
+    if (!globalVariable.preloadData) {
         // HTML is not rendered yet
         window[bootstrap_1.globalVariableName] = function (preloadData) {
             window[bootstrap_1.globalVariableName].preloadData = preloadData;
