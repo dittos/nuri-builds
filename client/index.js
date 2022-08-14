@@ -13,6 +13,7 @@ function render(app, container, loader, preloadData) {
         willLoad: function () { },
         didLoad: function () { },
         didAbortLoad: function () { },
+        didFailLoad: function () { },
         didCommitState: function (state, ancestorStates) {
             view.setState(state, ancestorStates);
         }

@@ -10,6 +10,7 @@ export interface AppControllerDelegate {
     willLoad(): void;
     didLoad(): void;
     didAbortLoad(): void;
+    didFailLoad(error: any): void;
     didCommitState(state: AppState, ancestorStates: AppState[]): void;
 }
 export declare class AppController<L> {

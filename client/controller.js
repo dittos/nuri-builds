@@ -57,6 +57,9 @@ var AppController = /** @class */ (function () {
             didAbortLoad: function () {
                 delegates.forEach(function (delegate) { return delegate.didAbortLoad(); });
             },
+            didFailLoad: function (error) {
+                delegates.forEach(function (delegate) { return delegate.didFailLoad(error); });
+            },
             didCommitLoad: function (state, ancestorStates) {
                 delegates.forEach(function (delegate) { return delegate.didCommitState(state, ancestorStates); });
             },

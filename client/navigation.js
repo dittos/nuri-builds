@@ -86,7 +86,9 @@ var NavigationController = /** @class */ (function () {
                 type = 'push';
             }
             _this.commit(type, entry);
-        }); // TODO: handle onError
+        }, function (error) {
+            _this.delegate.didFailLoad(error);
+        });
     };
     NavigationController.prototype.load = function (uri, token, sourceToken, isStacked, isRedirect) {
         var _this = this;
