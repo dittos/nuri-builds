@@ -27,16 +27,19 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppView = void 0;
+var React = __importStar(require("react"));
 var ReactDOM = __importStar(require("react-dom"));
 var app_1 = require("../app");
+var app_2 = require("../app");
 var components_1 = require("../components");
 var AppView = /** @class */ (function () {
-    function AppView(controller, container) {
+    function AppView(controller, container, errorHandler) {
         var _this = this;
-        this.ancestorStates = [];
         this.controller = controller;
         this.container = container;
+        this.errorHandler = errorHandler;
         this.state = null;
+        this.ancestorStates = [];
         window.addEventListener('scroll', function () {
             var docEl = document.documentElement;
             if (docEl) {
@@ -56,18 +59,30 @@ var AppView = /** @class */ (function () {
             return;
         }
         var parent = this.ancestorStates.length > 0 ? this.ancestorStates[this.ancestorStates.length - 1] : null;
-        var handler = state.handler, data = state.data, _a = state.scrollX, scrollX = _a === void 0 ? (parent && parent.scrollX) || 0 : _a, _b = state.scrollY, scrollY = _b === void 0 ? (parent && parent.scrollY) || 0 : _b;
-        document.title = app_1.renderTitle(this.controller.app, handler, data);
-        var elements = __spreadArrays(this.ancestorStates, [state]).map(function (it) { return components_1.createRouteElement(it.handler.component, {
-            controller: _this.controller,
-            data: it.data,
-            writeData: _this.writeData.bind(_this, it),
-            loader: _this.controller.getLoader(),
-        }); });
-        ReactDOM.render(elements, this.container);
+        var _a = state.scrollX, scrollX = _a === void 0 ? (parent && parent.scrollX) || 0 : _a, _b = state.scrollY, scrollY = _b === void 0 ? (parent && parent.scrollY) || 0 : _b;
+        if (state.status === 'ok') {
+            var handler = state.handler, data = state.data;
+            document.title = app_2.renderTitle(this.controller.app, handler, data);
+            var elements = __spreadArrays(this.ancestorStates, [state]).map(function (it) {
+                return it.status === 'ok' ? (components_1.createRouteElement(it.handler.component, {
+                    controller: _this.controller,
+                    data: it.data,
+                    writeData: _this.writeData.bind(_this, it),
+                    loader: _this.controller.getLoader(),
+                })) : React.createElement('span');
+            });
+            ReactDOM.render(elements, this.container);
+        }
+        else if (state.status === 'error') {
+            var routeTitle = this.errorHandler.renderTitle ? this.errorHandler.renderTitle(state.error) : '';
+            document.title = app_1.applyAppTitle(this.controller.app, routeTitle);
+            ReactDOM.render(React.createElement(this.errorHandler.component, { error: state.error }), this.container);
+        }
         window.scrollTo(scrollX, scrollY);
     };
     AppView.prototype.writeData = function (state, updater) {
+        if (state.status !== 'ok')
+            return;
         // TODO: batch updates
         updater(state.data);
         this._render();

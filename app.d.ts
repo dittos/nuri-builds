@@ -70,4 +70,5 @@ export declare class App<L> {
 export declare function createApp<L>(): App<L>;
 export declare function matchRoute<L>(app: App<L>, uri: ParsedURI): RouteMatch<L>;
 export declare function renderTitle<D, L>(app: App<L>, handler: RouteHandler<D, L>, data: D): string;
+export declare function applyAppTitle(app: App<any>, routeTitle: string): string;
 export declare type DataUpdater<D> = (data: D) => void;

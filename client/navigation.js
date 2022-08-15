@@ -86,9 +86,7 @@ var NavigationController = /** @class */ (function () {
                 type = 'push';
             }
             _this.commit(type, entry);
-        }, function (error) {
-            _this.delegate.didFailLoad(error);
-        });
+        }); // TODO: handle onError
     };
     NavigationController.prototype.load = function (uri, token, sourceToken, isStacked, isRedirect) {
         var _this = this;
@@ -102,9 +100,9 @@ var NavigationController = /** @class */ (function () {
                 return rxjs_1.of({
                     uri: uri,
                     token: token,
-                    state: result,
+                    state: result.state,
                     isRedirect: isRedirect,
-                    parentToken: isStacked ? sourceToken : null,
+                    parentToken: isStacked && !result.escapeStack ? sourceToken : null,
                 });
             }
         }));

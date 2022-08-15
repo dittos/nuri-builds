@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isRedirect = exports.Redirect = void 0;
+exports.applyAppTitle = exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isRedirect = exports.Redirect = void 0;
 var path_to_regexp_1 = __importDefault(require("path-to-regexp"));
 var isFunction = require("lodash/isFunction");
 var util_1 = require("./util");
@@ -94,6 +94,10 @@ function matchRoute(app, uri) {
 exports.matchRoute = matchRoute;
 function renderTitle(app, handler, data) {
     var routeTitle = handler.renderTitle ? handler.renderTitle(data) : '';
+    return applyAppTitle(app, routeTitle);
+}
+exports.renderTitle = renderTitle;
+function applyAppTitle(app, routeTitle) {
     var titleFn = app.title;
     if (isFunction(titleFn)) {
         return titleFn(routeTitle);
@@ -101,5 +105,5 @@ function renderTitle(app, handler, data) {
     var defaultTitle = titleFn;
     return routeTitle || defaultTitle;
 }
-exports.renderTitle = renderTitle;
+exports.applyAppTitle = applyAppTitle;
 //# sourceMappingURL=app.js.map

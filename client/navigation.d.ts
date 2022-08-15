@@ -12,12 +12,14 @@ export interface LoadRequest {
     uri: string;
     stacked: boolean;
 }
-export declare type LoadResult<T> = T | Redirect;
+export declare type LoadResult<T> = {
+    state: T;
+    escapeStack?: boolean;
+} | Redirect;
 export interface NavigationControllerDelegate<T> {
     willLoad(): void;
     didLoad(): void;
     didAbortLoad(): void;
-    didFailLoad(error: any): void;
     didCommitLoad(state: T, ancestorStates: T[]): void;
 }
 export declare type StateLoader<T> = (request: LoadRequest) => Observable<LoadResult<T>>;

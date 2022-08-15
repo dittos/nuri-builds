@@ -19,8 +19,11 @@ var AppController = /** @class */ (function () {
             var load = handler.load;
             if (!load) {
                 return rxjs_1.of({
-                    handler: handler,
-                    data: {},
+                    state: {
+                        status: 'ok',
+                        handler: handler,
+                        data: {},
+                    }
                 });
             }
             var request = app_1.createRequest({
@@ -39,10 +42,21 @@ var AppController = /** @class */ (function () {
                 else {
                     var data = response;
                     return {
-                        handler: handler,
-                        data: data,
+                        state: {
+                            status: 'ok',
+                            handler: handler,
+                            data: data,
+                        }
                     };
                 }
+            }), operators_1.catchError(function (error) {
+                return rxjs_1.of({
+                    state: {
+                        status: 'error',
+                        error: error,
+                    },
+                    escapeStack: true,
+                });
             }));
         };
         var delegates = [];
@@ -57,9 +71,6 @@ var AppController = /** @class */ (function () {
             didAbortLoad: function () {
                 delegates.forEach(function (delegate) { return delegate.didAbortLoad(); });
             },
-            didFailLoad: function (error) {
-                delegates.forEach(function (delegate) { return delegate.didFailLoad(error); });
-            },
             didCommitLoad: function (state, ancestorStates) {
                 delegates.forEach(function (delegate) { return delegate.didCommitState(state, ancestorStates); });
             },
@@ -71,6 +82,7 @@ var AppController = /** @class */ (function () {
             var location_1 = this.history.getLocation();
             var matchedRequest = this.matchRoute(util_1.parseURI(location_1.uri));
             preloadState = {
+                status: 'ok',
                 handler: matchedRequest.handler,
                 data: preloadData,
             };

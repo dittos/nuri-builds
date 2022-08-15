@@ -1,16 +1,20 @@
 import { App, PreloadData, WireObject, RouteHandler, ParsedURI } from '../app';
 import { History } from './history';
 export declare type AppState = {
-    handler: RouteHandler<any, any>;
-    data: WireObject;
     scrollX?: number;
     scrollY?: number;
-};
+} & ({
+    status: 'ok';
+    handler: RouteHandler<any, any>;
+    data: WireObject;
+} | {
+    status: 'error';
+    error: any;
+});
 export interface AppControllerDelegate {
     willLoad(): void;
     didLoad(): void;
     didAbortLoad(): void;
-    didFailLoad(error: any): void;
     didCommitState(state: AppState, ancestorStates: AppState[]): void;
 }
 export declare class AppController<L> {
