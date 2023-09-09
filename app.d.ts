@@ -62,13 +62,12 @@ export declare function createRequest<L>(base: BaseRequest<L>): Request<L>;
 export declare type PreloadData = WireObject;
 export declare class App<L> {
     routes: Route<L>[];
-    defaultHandler: RouteHandler<any, L>;
     title: string | ((routeTitle?: string) => string);
     constructor();
     route<D>(path: string, handler: RouteHandler<D, L>): void;
 }
 export declare function createApp<L>(): App<L>;
-export declare function matchRoute<L>(app: App<L>, uri: ParsedURI): RouteMatch<L>;
+export declare function matchRoute<L>(app: App<L>, uri: ParsedURI): RouteMatch<L> | null;
 export declare function renderTitle<D, L>(app: App<L>, handler: RouteHandler<D, L>, data: D): string;
 export declare function applyAppTitle(app: App<any>, routeTitle: string): string;
 export declare type DataUpdater<D> = (data: D) => void;

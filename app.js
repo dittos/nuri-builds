@@ -38,23 +38,12 @@ function createRequest(base) {
     return __assign(__assign({}, base), { redirect: redirect });
 }
 exports.createRequest = createRequest;
-var defaultHandler = {
-    load: function () {
-        return Promise.reject({ status: 404 });
-    },
-    component: function () { return null; },
-};
 var App = /** @class */ (function () {
     function App() {
         this.routes = [];
-        this.defaultHandler = defaultHandler;
         this.title = '';
     }
     App.prototype.route = function (path, handler) {
-        if (path === '*') {
-            this.defaultHandler = handler;
-            return;
-        }
         var keys = [];
         var regexp = path_to_regexp_1.default(path, keys);
         this.routes.push({
@@ -86,10 +75,7 @@ function matchRoute(app, uri) {
             };
         }
     }
-    return {
-        handler: app.defaultHandler,
-        params: {},
-    };
+    return null;
 }
 exports.matchRoute = matchRoute;
 function renderTitle(app, handler, data) {

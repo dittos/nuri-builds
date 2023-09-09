@@ -24,10 +24,15 @@ var ReactDOMServer = __importStar(require("react-dom/server"));
 var app_1 = require("./app");
 var components_1 = require("./components");
 var bootstrap_1 = require("./bootstrap");
+var error_1 = require("./error");
 // eslint-disable-next-line no-unused-vars
 function noOpWriteData(updater) { }
 function render(app, serverRequest, loader) {
-    var _a = app_1.matchRoute(app, serverRequest), handler = _a.handler, params = _a.params;
+    var match = app_1.matchRoute(app, serverRequest);
+    if (!match) {
+        return Promise.reject(new error_1.NotFoundError());
+    }
+    var handler = match.handler, params = match.params;
     var request = app_1.createRequest({
         loader: loader,
         uri: serverRequest.url,
@@ -38,12 +43,10 @@ function render(app, serverRequest, loader) {
     var loadPromise = handler.load ?
         handler.load(request)
         : Promise.resolve({});
-    return loadPromise.then(function (response) { return createResult(app, request, handler, response); }, function (err) { return err.status ?
-        createResult(app, request, handler, {}, err.status)
-        : Promise.reject(err); });
+    return loadPromise.then(function (response) { return createResult(app, request, handler, response); }, function (err) { return Promise.reject(err); });
 }
 exports.render = render;
-function createResult(app, request, handler, response, errorStatus) {
+function createResult(app, request, handler, response) {
     if (app_1.isRedirect(response)) {
         return {
             preloadData: {},
@@ -63,12 +66,8 @@ function createResult(app, request, handler, response, errorStatus) {
         preloadData: data,
         title: app_1.renderTitle(app, handler, data),
         meta: handler.renderMeta ? handler.renderMeta(data) : {},
-        errorStatus: errorStatus,
         element: element,
         getHTML: function () {
-            if (errorStatus) {
-                return '';
-            }
             return bootstrap_1.wrapHTML(ReactDOMServer.renderToString(element));
         }
     };

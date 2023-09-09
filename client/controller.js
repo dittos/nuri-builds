@@ -6,6 +6,7 @@ var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
 var navigation_1 = require("./navigation");
 var util_1 = require("../util");
+var error_1 = require("../error");
 var AppController = /** @class */ (function () {
     function AppController(app, history, loader) {
         var _this = this;
@@ -15,7 +16,17 @@ var AppController = /** @class */ (function () {
         this.loadState = function (_a) {
             var uri = _a.uri, stacked = _a.stacked;
             var parsedURI = util_1.parseURI(uri);
-            var _b = _this.matchRoute(parsedURI), handler = _b.handler, params = _b.params;
+            var match = _this.matchRoute(parsedURI);
+            if (!match) {
+                return rxjs_1.of({
+                    state: {
+                        status: 'error',
+                        error: new error_1.NotFoundError(),
+                    },
+                    escapeStack: true,
+                });
+            }
+            var handler = match.handler, params = match.params;
             var load = handler.load;
             if (!load) {
                 return rxjs_1.of({
@@ -81,10 +92,13 @@ var AppController = /** @class */ (function () {
         if (preloadData) {
             var location_1 = this.history.getLocation();
             var matchedRequest = this.matchRoute(util_1.parseURI(location_1.uri));
-            preloadState = {
+            preloadState = matchedRequest ? {
                 status: 'ok',
                 handler: matchedRequest.handler,
                 data: preloadData,
+            } : {
+                status: 'error',
+                error: new error_1.NotFoundError(),
             };
         }
         this.navigationController.start(preloadState);
