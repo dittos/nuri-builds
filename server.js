@@ -22,18 +22,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.render = void 0;
 var ReactDOMServer = __importStar(require("react-dom/server"));
 var app_1 = require("./app");
+var app_2 = require("./app");
 var components_1 = require("./components");
 var bootstrap_1 = require("./bootstrap");
-var error_1 = require("./error");
 // eslint-disable-next-line no-unused-vars
 function noOpWriteData(updater) { }
 function render(app, serverRequest, loader) {
-    var match = app_1.matchRoute(app, serverRequest);
+    var match = app_2.matchRoute(app, serverRequest);
     if (!match) {
-        return Promise.reject(new error_1.NotFoundError());
+        return Promise.resolve(createNotFoundResult());
     }
     var handler = match.handler, params = match.params;
-    var request = app_1.createRequest({
+    var request = app_2.createRequest({
         loader: loader,
         uri: serverRequest.url,
         path: serverRequest.path,
@@ -46,8 +46,17 @@ function render(app, serverRequest, loader) {
     return loadPromise.then(function (response) { return createResult(app, request, handler, response); }, function (err) { return Promise.reject(err); });
 }
 exports.render = render;
+function createNotFoundResult() {
+    return {
+        preloadData: {},
+        title: '',
+        meta: {},
+        errorStatus: 404,
+        getHTML: function () { return ''; },
+    };
+}
 function createResult(app, request, handler, response) {
-    if (app_1.isRedirect(response)) {
+    if (app_2.isRedirect(response)) {
         return {
             preloadData: {},
             title: '',
@@ -55,6 +64,9 @@ function createResult(app, request, handler, response) {
             redirectURI: response.uri,
             getHTML: function () { return ''; },
         };
+    }
+    if (app_1.isNotFound(response)) {
+        return createNotFoundResult();
     }
     var data = response;
     var element = components_1.createRouteElement(handler.component, {
@@ -64,7 +76,7 @@ function createResult(app, request, handler, response) {
     });
     return {
         preloadData: data,
-        title: app_1.renderTitle(app, handler, data),
+        title: app_2.renderTitle(app, handler, data),
         meta: handler.renderMeta ? handler.renderMeta(data) : {},
         element: element,
         getHTML: function () {

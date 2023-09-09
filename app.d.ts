@@ -15,7 +15,7 @@ export declare type RouteComponentProps<D, L> = {
     loader: L;
 };
 export declare type RouteComponent<D, L> = React.ComponentType<RouteComponentProps<D, L>>;
-export declare type Response<D> = D | Redirect;
+export declare type Response<D> = D | Redirect | NotFound;
 export declare type RouteHandler<D, L> = {
     component?: RouteComponent<D, L>;
     load?: (request: Request<L>) => Promise<Response<D>>;
@@ -43,6 +43,9 @@ export declare class Redirect {
     constructor(uri: string | ParsedURI, options?: RedirectOptions);
 }
 export declare function isRedirect(obj: any): obj is Redirect;
+export declare class NotFound {
+}
+export declare function isNotFound(obj: any): obj is NotFound;
 export declare type BaseRequest<L> = {
     loader: L;
     uri: string;
@@ -57,6 +60,7 @@ export declare type BaseRequest<L> = {
 };
 export declare type Request<L> = BaseRequest<L> & {
     redirect: (uri: string | ParsedURI, options?: RedirectOptions) => Promise<Redirect>;
+    notFound: () => Promise<NotFound>;
 };
 export declare function createRequest<L>(base: BaseRequest<L>): Request<L>;
 export declare type PreloadData = WireObject;

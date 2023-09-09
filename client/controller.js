@@ -6,7 +6,6 @@ var operators_1 = require("rxjs/operators");
 var app_1 = require("../app");
 var navigation_1 = require("./navigation");
 var util_1 = require("../util");
-var error_1 = require("../error");
 var AppController = /** @class */ (function () {
     function AppController(app, history, loader) {
         var _this = this;
@@ -21,7 +20,7 @@ var AppController = /** @class */ (function () {
                 return rxjs_1.of({
                     state: {
                         status: 'error',
-                        error: new error_1.NotFoundError(),
+                        error: 'Not Found',
                     },
                     escapeStack: true,
                 });
@@ -98,7 +97,7 @@ var AppController = /** @class */ (function () {
                 data: preloadData,
             } : {
                 status: 'error',
-                error: new error_1.NotFoundError(),
+                error: 'Not Found',
             };
         }
         this.navigationController.start(preloadState);

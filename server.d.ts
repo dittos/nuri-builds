@@ -11,6 +11,7 @@ export declare type RenderResult = {
     preloadData: PreloadData;
     title: string;
     meta: WireObject;
+    errorStatus?: number;
     redirectURI?: string;
     element?: React.ReactElement<any>;
     getHTML(): string;

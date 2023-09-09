@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.applyAppTitle = exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isRedirect = exports.Redirect = void 0;
+exports.applyAppTitle = exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isNotFound = exports.NotFound = exports.isRedirect = exports.Redirect = void 0;
 var path_to_regexp_1 = __importDefault(require("path-to-regexp"));
 var isFunction = require("lodash/isFunction");
 var util_1 = require("./util");
@@ -34,8 +34,22 @@ function isRedirect(obj) {
     return obj instanceof Redirect;
 }
 exports.isRedirect = isRedirect;
+var NotFound = /** @class */ (function () {
+    function NotFound() {
+    }
+    return NotFound;
+}());
+exports.NotFound = NotFound;
+function notFound() {
+    return Promise.resolve(new NotFound());
+}
+function isNotFound(obj) {
+    return obj instanceof NotFound;
+}
+exports.isNotFound = isNotFound;
 function createRequest(base) {
-    return __assign(__assign({}, base), { redirect: redirect });
+    return __assign(__assign({}, base), { redirect: redirect,
+        notFound: notFound });
 }
 exports.createRequest = createRequest;
 var App = /** @class */ (function () {
