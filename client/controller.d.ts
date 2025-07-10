@@ -32,5 +32,6 @@ export declare class AppController<L> {
     subscribe(delegate: AppControllerDelegate): void;
     getLoader(): L;
     private loadState;
+    private loadStateFromMatch;
     private matchRoute;
 }

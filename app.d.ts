@@ -5,6 +5,11 @@ export declare type Route<L> = {
     keys: any[];
     handler: RouteHandler<any, L>;
 };
+export declare type LazyRoute<L> = {
+    regexp: RegExp;
+    keys: any[];
+    handler: LazyRouteHandler<any, L>;
+};
 export declare type WireObject = {
     [key: string]: any;
 };
@@ -22,6 +27,7 @@ export declare type RouteHandler<D, L> = {
     renderTitle?: (data: D) => string;
     renderMeta?: (data: D) => WireObject;
 };
+export declare type LazyRouteHandler<D, L> = () => Promise<RouteHandler<D, L>>;
 export declare type ParsedURI = {
     path: string;
     query: {
@@ -30,6 +36,12 @@ export declare type ParsedURI = {
 };
 export declare type RouteMatch<L> = {
     handler: RouteHandler<any, L>;
+    params: {
+        [key: string]: any;
+    };
+};
+export declare type LazyRouteMatch<L> = {
+    handler: LazyRouteHandler<any, L>;
     params: {
         [key: string]: any;
     };
@@ -66,12 +78,15 @@ export declare function createRequest<L>(base: BaseRequest<L>): Request<L>;
 export declare type PreloadData = WireObject;
 export declare class App<L> {
     routes: Route<L>[];
+    lazyRoutes: LazyRoute<L>[];
     title: string | ((routeTitle?: string) => string);
     constructor();
     route<D>(path: string, handler: RouteHandler<D, L>): void;
+    lazyRoute<D>(path: string, handler: () => Promise<RouteHandler<D, L>>): void;
 }
 export declare function createApp<L>(): App<L>;
 export declare function matchRoute<L>(app: App<L>, uri: ParsedURI): RouteMatch<L> | null;
+export declare function matchLazyRoute<L>(app: App<L>, uri: ParsedURI): LazyRouteMatch<L> | null;
 export declare function renderTitle<D, L>(app: App<L>, handler: RouteHandler<D, L>, data: D): string;
 export declare function applyAppTitle(app: App<any>, routeTitle: string): string;
 export declare type DataUpdater<D> = (data: D) => void;

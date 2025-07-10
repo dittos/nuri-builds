@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.applyAppTitle = exports.renderTitle = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isNotFound = exports.NotFound = exports.isRedirect = exports.Redirect = void 0;
+exports.applyAppTitle = exports.renderTitle = exports.matchLazyRoute = exports.matchRoute = exports.createApp = exports.App = exports.createRequest = exports.isNotFound = exports.NotFound = exports.isRedirect = exports.Redirect = void 0;
 var path_to_regexp_1 = __importDefault(require("path-to-regexp"));
 var isFunction = require("lodash/isFunction");
 var util_1 = require("./util");
@@ -55,12 +55,22 @@ exports.createRequest = createRequest;
 var App = /** @class */ (function () {
     function App() {
         this.routes = [];
+        this.lazyRoutes = [];
         this.title = '';
     }
     App.prototype.route = function (path, handler) {
         var keys = [];
         var regexp = path_to_regexp_1.default(path, keys);
         this.routes.push({
+            regexp: regexp,
+            keys: keys,
+            handler: handler,
+        });
+    };
+    App.prototype.lazyRoute = function (path, handler) {
+        var keys = [];
+        var regexp = path_to_regexp_1.default(path, keys);
+        this.lazyRoutes.push({
             regexp: regexp,
             keys: keys,
             handler: handler,
@@ -92,6 +102,25 @@ function matchRoute(app, uri) {
     return null;
 }
 exports.matchRoute = matchRoute;
+function matchLazyRoute(app, uri) {
+    var routes = app.lazyRoutes;
+    for (var i = 0; i < routes.length; i++) {
+        var route = routes[i];
+        var matches = route.regexp.exec(uri.path);
+        if (matches) {
+            var params = {};
+            for (var j = 0; j < matches.length - 1; j++) {
+                params[route.keys[j].name] = decodeURIComponent(matches[j + 1]);
+            }
+            return {
+                handler: route.handler,
+                params: params,
+            };
+        }
+    }
+    return null;
+}
+exports.matchLazyRoute = matchLazyRoute;
 function renderTitle(app, handler, data) {
     var routeTitle = handler.renderTitle ? handler.renderTitle(data) : '';
     return applyAppTitle(app, routeTitle);

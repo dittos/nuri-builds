@@ -17,6 +17,16 @@ var AppController = /** @class */ (function () {
             var parsedURI = util_1.parseURI(uri);
             var match = _this.matchRoute(parsedURI);
             if (!match) {
+                var lazyMatch_1 = app_1.matchLazyRoute(_this.app, parsedURI);
+                if (lazyMatch_1) {
+                    return rxjs_1.defer(function () { return lazyMatch_1.handler(); })
+                        .pipe(operators_1.switchMap(function (handler) {
+                        return _this.loadStateFromMatch({
+                            handler: handler,
+                            params: lazyMatch_1.params,
+                        }, uri, parsedURI, stacked);
+                    }));
+                }
                 return rxjs_1.of({
                     state: {
                         status: 'error',
@@ -25,49 +35,7 @@ var AppController = /** @class */ (function () {
                     escapeStack: true,
                 });
             }
-            var handler = match.handler, params = match.params;
-            var load = handler.load;
-            if (!load) {
-                return rxjs_1.of({
-                    state: {
-                        status: 'ok',
-                        handler: handler,
-                        data: {},
-                    }
-                });
-            }
-            var request = app_1.createRequest({
-                loader: _this.loader,
-                uri: uri,
-                path: parsedURI.path,
-                query: parsedURI.query,
-                params: params,
-                stacked: stacked,
-            });
-            return rxjs_1.defer(function () { return load(request); })
-                .pipe(operators_1.map(function (response) {
-                if (app_1.isRedirect(response)) {
-                    return response;
-                }
-                else {
-                    var data = response;
-                    return {
-                        state: {
-                            status: 'ok',
-                            handler: handler,
-                            data: data,
-                        }
-                    };
-                }
-            }), operators_1.catchError(function (error) {
-                return rxjs_1.of({
-                    state: {
-                        status: 'error',
-                        error: error,
-                    },
-                    escapeStack: true,
-                });
-            }));
+            return _this.loadStateFromMatch(match, uri, parsedURI, stacked);
         };
         var delegates = [];
         this.delegates = delegates;
@@ -116,6 +84,51 @@ var AppController = /** @class */ (function () {
     };
     AppController.prototype.getLoader = function () {
         return this.loader;
+    };
+    AppController.prototype.loadStateFromMatch = function (match, uri, parsedURI, stacked) {
+        var handler = match.handler, params = match.params;
+        var load = handler.load;
+        if (!load) {
+            return rxjs_1.of({
+                state: {
+                    status: 'ok',
+                    handler: handler,
+                    data: {},
+                }
+            });
+        }
+        var request = app_1.createRequest({
+            loader: this.loader,
+            uri: uri,
+            path: parsedURI.path,
+            query: parsedURI.query,
+            params: params,
+            stacked: stacked,
+        });
+        return rxjs_1.defer(function () { return load(request); })
+            .pipe(operators_1.map(function (response) {
+            if (app_1.isRedirect(response)) {
+                return response;
+            }
+            else {
+                var data = response;
+                return {
+                    state: {
+                        status: 'ok',
+                        handler: handler,
+                        data: data,
+                    }
+                };
+            }
+        }), operators_1.catchError(function (error) {
+            return rxjs_1.of({
+                state: {
+                    status: 'error',
+                    error: error,
+                },
+                escapeStack: true,
+            });
+        }));
     };
     AppController.prototype.matchRoute = function (uri) {
         return app_1.matchRoute(this.app, uri);
