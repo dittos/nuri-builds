@@ -24,6 +24,7 @@ var AppController = /** @class */ (function () {
                         return _this.loadStateFromMatch({
                             handler: handler,
                             params: lazyMatch_1.params,
+                            routeId: undefined,
                         }, uri, parsedURI, stacked);
                     }));
                 }

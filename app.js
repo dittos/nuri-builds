@@ -58,13 +58,14 @@ var App = /** @class */ (function () {
         this.lazyRoutes = [];
         this.title = '';
     }
-    App.prototype.route = function (path, handler) {
+    App.prototype.route = function (path, handler, id) {
         var keys = [];
         var regexp = path_to_regexp_1.default(path, keys);
         this.routes.push({
             regexp: regexp,
             keys: keys,
             handler: handler,
+            id: id,
         });
     };
     App.prototype.lazyRoute = function (path, handler) {
@@ -96,6 +97,7 @@ function matchRoute(app, uri) {
             return {
                 handler: route.handler,
                 params: params,
+                routeId: route.id,
             };
         }
     }

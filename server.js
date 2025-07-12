@@ -32,7 +32,7 @@ function render(app, serverRequest, loader) {
     if (!match) {
         return Promise.resolve(createNotFoundResult());
     }
-    var handler = match.handler, params = match.params;
+    var handler = match.handler, params = match.params, routeId = match.routeId;
     var request = app_2.createRequest({
         loader: loader,
         uri: serverRequest.url,
@@ -43,7 +43,7 @@ function render(app, serverRequest, loader) {
     var loadPromise = handler.load ?
         handler.load(request)
         : Promise.resolve({});
-    return loadPromise.then(function (response) { return createResult(app, request, handler, response); }, function (err) { return Promise.reject(err); });
+    return loadPromise.then(function (response) { return createResult(app, request, handler, response, routeId); }, function (err) { return Promise.reject(err); });
 }
 exports.render = render;
 function createNotFoundResult() {
@@ -53,9 +53,10 @@ function createNotFoundResult() {
         meta: {},
         errorStatus: 404,
         getHTML: function () { return ''; },
+        routeId: undefined,
     };
 }
-function createResult(app, request, handler, response) {
+function createResult(app, request, handler, response, routeId) {
     if (app_2.isRedirect(response)) {
         return {
             preloadData: {},
@@ -63,6 +64,7 @@ function createResult(app, request, handler, response) {
             meta: {},
             redirectURI: response.uri,
             getHTML: function () { return ''; },
+            routeId: undefined,
         };
     }
     if (app_1.isNotFound(response)) {
@@ -81,7 +83,8 @@ function createResult(app, request, handler, response) {
         element: element,
         getHTML: function () {
             return bootstrap_1.wrapHTML(ReactDOMServer.renderToString(element));
-        }
+        },
+        routeId: routeId,
     };
 }
 //# sourceMappingURL=server.js.map

@@ -4,6 +4,7 @@ export declare type Route<L> = {
     regexp: RegExp;
     keys: any[];
     handler: RouteHandler<any, L>;
+    id: string | undefined;
 };
 export declare type LazyRoute<L> = {
     regexp: RegExp;
@@ -39,6 +40,7 @@ export declare type RouteMatch<L> = {
     params: {
         [key: string]: any;
     };
+    routeId: string | undefined;
 };
 export declare type LazyRouteMatch<L> = {
     handler: LazyRouteHandler<any, L>;
@@ -81,7 +83,7 @@ export declare class App<L> {
     lazyRoutes: LazyRoute<L>[];
     title: string | ((routeTitle?: string) => string);
     constructor();
-    route<D>(path: string, handler: RouteHandler<D, L>): void;
+    route<D>(path: string, handler: RouteHandler<D, L>, id?: string): void;
     lazyRoute<D>(path: string, handler: () => Promise<RouteHandler<D, L>>): void;
 }
 export declare function createApp<L>(): App<L>;

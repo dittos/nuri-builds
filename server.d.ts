@@ -8,6 +8,7 @@ export interface ServerRequest {
     };
 }
 export declare type RenderResult = {
+    routeId: string | undefined;
     preloadData: PreloadData;
     title: string;
     meta: WireObject;
